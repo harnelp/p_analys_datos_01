@@ -4,3 +4,6 @@
 [submodule "proyecto_parte4_A_Datos"]
 	path = proyecto_parte4_A_Datos
 	url = https://github.com/harnelp/proyecto_parte4_A_Datos.git
+[submodule "p_analys_datos_05"]
+	path = p_analys_datos_05
+	url = https://github.com/harnelp/p_analys_datos_05.git
