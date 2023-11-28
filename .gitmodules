@@ -1,3 +1,6 @@
 [submodule "proyecto_parte3"]
 	path = proyecto_parte3
 	url = https://github.com/harnelp/proyecto_parte3.git
+[submodule "proyecto_parte4_A_Datos"]
+	path = proyecto_parte4_A_Datos
+	url = https://github.com/harnelp/proyecto_parte4_A_Datos.git
