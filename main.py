@@ -1,27 +1,33 @@
 import pandas as pd
-from sklearn.manifold import TSNE
-import plotly.express as px
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 
 # Cargar el DataFrame
 df_limpio = pd.read_csv('p_analys_datos_05/datos_limpios.csv')
 
-# Preparar los datos, eliminar la columna objetivo y otras no deseadas
-X = df_limpio.drop(columns=['DEATH_EVENT', 'categoria_edad']).values
-y = df_limpio['DEATH_EVENT'].values
+# Eliminar las columnas 'DEATH_EVENT', 'age' y 'categoria_edad' para crear la matriz X
+X = df_limpio.drop(columns=['DEATH_EVENT', 'age', 'categoria_edad'])
 
-# Ejecutar t-SNE
-X_embedded = TSNE(n_components=3, learning_rate='auto', init='random', perplexity=3).fit_transform(X)
+# Usar la columna 'age' como vector y
+y = df_limpio['age']
 
-# Crear un DataFrame con los datos transformados y la columna objetivo
-tsne_df = pd.DataFrame(X_embedded, columns=['x', 'y', 'z'])
-tsne_df['DEATH_EVENT'] = y
+# Dividir los datos en conjuntos de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Crear un gráfico de dispersión 3D usando Plotly
-fig = px.scatter_3d(tsne_df, x='x', y='y', z='z',
-                    color='DEATH_EVENT', 
-                    labels={'0': 'Vivo', '1': 'Muerto'},
-                    title='Visualización 3D t-SNE de los datos de insuficiencia cardíaca')
+# Ajustar una regresión lineal
+regressor = LinearRegression()
+regressor.fit(X_train, y_train)
 
-# Mostrar el gráfico
-fig.show()
+# Predecir las edades en el conjunto de prueba
+y_pred = regressor.predict(X_test)
 
+# Comparar las edades reales y predichas
+comparacion = pd.DataFrame({'Edad Real': y_test, 'Edad Predicha': y_pred})
+print(comparacion.head())  # Mostrar las primeras filas para comparar
+
+# Calcular el error cuadrático medio
+mse = mean_squared_error(y_test, y_pred)
+print("")
+print(f"El error cuadrático medio (MSE) es: {mse}")
+print("")
