@@ -1,27 +1,27 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+from sklearn.manifold import TSNE
+import plotly.express as px
 
-# Cargamos el DataFrame
+# Cargar el DataFrame
 df_limpio = pd.read_csv('p_analys_datos_05/datos_limpios.csv')
 
-# Creamos una figura con subplots
-fig, axs = plt.subplots(1, 4, figsize=(14, 5))  # Ajusta el tamaño según tus necesidades
+# Preparar los datos, eliminar la columna objetivo y otras no deseadas
+X = df_limpio.drop(columns=['DEATH_EVENT', 'categoria_edad']).values
+y = df_limpio['DEATH_EVENT'].values
 
-# Lista de condiciones y sus respectivos títulos
-condiciones = ['anaemia', 'diabetes', 'smoking', 'DEATH_EVENT']
-titulos = ['Anémicos', 'Diabéticos', 'Fumadores', 'Muertos']
+# Ejecutar t-SNE
+X_embedded = TSNE(n_components=3, learning_rate='auto', init='random', perplexity=3).fit_transform(X)
 
-for i, condicion in enumerate(condiciones):
-    # Calculamos las proporciones
-    sizes = df_limpio[condicion].value_counts(normalize=True) * 100
-    labels = ['No', 'Sí']
-    colors = ['#ff9999','#66b3ff']  # Ajusta los colores según tus necesidades
-    
-    # Dibujamos la gráfica de torta
-    axs[i].pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-    axs[i].axis('equal')  # Esto asegura que la torta sea un círculo
-    axs[i].set_title(titulos[i])
+# Crear un DataFrame con los datos transformados y la columna objetivo
+tsne_df = pd.DataFrame(X_embedded, columns=['x', 'y', 'z'])
+tsne_df['DEATH_EVENT'] = y
 
-# Ajustar el layout y mostrar la gráfica
-plt.tight_layout()
-plt.show()
+# Crear un gráfico de dispersión 3D usando Plotly
+fig = px.scatter_3d(tsne_df, x='x', y='y', z='z',
+                    color='DEATH_EVENT', 
+                    labels={'0': 'Vivo', '1': 'Muerto'},
+                    title='Visualización 3D t-SNE de los datos de insuficiencia cardíaca')
+
+# Mostrar el gráfico
+fig.show()
+
