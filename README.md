@@ -1,8 +1,4 @@
-# proyecto_analisis_datos_01
-El proyecto de este curso consiste en analizar el conjunto de datos introducido en esta sección, 
-procesarlo, limpiarlo y finalmente ajustar modelos de machine learning para realizar predicciones sobre estos datos.
+# proyecto_analisis_datos_parte8
+![image](https://github.com/harnelp/p_analys_datos_01/assets/45137526/e192efb4-7817-4921-99eb-cf0c10cd39e4)
 
-Tu tarea para esta etapa del proyecto integrador es convertir la lista de edades a un arreglo de NumPy 
-y calcular el promedio de edad de las personas participantes en el estudio.
 
-Edad promedio calculado: 60.8
