@@ -1,55 +1,27 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 
-# Cargar los datos limpios
+# Cargamos el DataFrame
 df_limpio = pd.read_csv('p_analys_datos_05/datos_limpios.csv')
 
-"""
-# Verificar los nombres de las columnas
-print(df_limpio.columns)
-"""
+# Creamos una figura con subplots
+fig, axs = plt.subplots(1, 4, figsize=(14, 5))  # Ajusta el tamaño según tus necesidades
 
-
-# Define las categorías basadas en las columnas de tu DataFrame
-categorias = ['Anémicos', 'Diabéticos', 'Fumadores', 'Muertos']
+# Lista de condiciones y sus respectivos títulos
 condiciones = ['anaemia', 'diabetes', 'smoking', 'DEATH_EVENT']
+titulos = ['Anémicos', 'Diabéticos', 'Fumadores', 'Muertos']
 
-# Asume que la columna 'sex' usa 0 para mujeres y 1 para hombres
-# Si la columna 'sex' no usa valores binarios, deberás ajustar las condiciones
-hombres = [df_limpio[(df_limpio['sex'] == 1) & (df_limpio[condicion] == 1)].shape[0] for condicion in condiciones]
-mujeres = [df_limpio[(df_limpio['sex'] == 0) & (df_limpio[condicion] == 1)].shape[0] for condicion in condiciones]
+for i, condicion in enumerate(condiciones):
+    # Calculamos las proporciones
+    sizes = df_limpio[condicion].value_counts(normalize=True) * 100
+    labels = ['No', 'Sí']
+    colors = ['#ff9999','#66b3ff']  # Ajusta los colores según tus necesidades
+    
+    # Dibujamos la gráfica de torta
+    axs[i].pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
+    axs[i].axis('equal')  # Esto asegura que la torta sea un círculo
+    axs[i].set_title(titulos[i])
 
-# Configura la ubicación de las barras en el eje x
-x = np.arange(len(categorias))
-width = 0.35  # Ancho de las barras
-
-# Crear el histograma agrupado
-fig, ax = plt.subplots()
-rects1 = ax.bar(x - width/2, hombres, width, label='Hombres', color='blue')
-rects2 = ax.bar(x + width/2, mujeres, width, label='Mujeres', color='red')
-
-# Añadir etiquetas y título
-ax.set_ylabel('Cantidad')
-ax.set_title('Histograma Agrupado por Sexo')
-ax.set_xticks(x)
-ax.set_xticklabels(categorias)
-ax.legend()
-
-# Función para añadir etiquetas a las barras
-def autolabel(rects):
-    for rect in rects:
-        height = rect.get_height()
-        ax.annotate('{}'.format(height),
-                    xy=(rect.get_x() + rect.get_width() / 2, height),
-                    xytext=(0, 3),  # 3 points vertical offset
-                    textcoords="offset points",
-                    ha='center', va='bottom')
-
-# Llama a la función autolabel para cada conjunto de barras
-autolabel(rects1)
-autolabel(rects2)
-
-# Ajusta el layout y muestra el gráfico
-fig.tight_layout()
+# Ajustar el layout y mostrar la gráfica
+plt.tight_layout()
 plt.show()
