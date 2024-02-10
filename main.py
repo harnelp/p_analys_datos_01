@@ -33,6 +33,3 @@ y_pred = dt_classifier.predict(X_test)
 # Calcular el accuracy
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy del modelo: {accuracy:.2f}")
-
-# Experimentar con diferentes valores de parámetros para el árbol de decisión
-# Por ejemplo, cambiar la profundidad máxima (max_depth), criterio, min_samples_split, etc.
