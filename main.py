@@ -1,8 +1,7 @@
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, f1_score, accuracy_score
 from sklearn.model_selection import train_test_split
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import accuracy_score
-import matplotlib.pyplot as plt
 
 # Cargamos el DataFrame
 df_limpio = pd.read_csv('p_analys_datos_05/datos_limpios.csv')
@@ -11,28 +10,23 @@ df_limpio = pd.read_csv('p_analys_datos_05/datos_limpios.csv')
 X = df_limpio.drop(columns=['DEATH_EVENT', 'categoria_edad'])
 y = df_limpio['DEATH_EVENT']
 
-# Graficar la distribución de clases
-plt.figure(figsize=(8, 5))
-df_limpio['DEATH_EVENT'].value_counts().plot(kind='bar', color=['blue', 'orange'])
-plt.title('Distribución de Clases')
-plt.xlabel('Clase')
-plt.ylabel('Frecuencia')
-plt.xticks(ticks=[0, 1], labels=['Vivo', 'Muerto'], rotation=0)
-plt.show()
-
 # Partición estratificada del dataset
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, stratify=y, random_state=42)
 
-# Ajustar un árbol de decisión
-dt_classifier = DecisionTreeClassifier(random_state=42)  # Puedes variar los parámetros aquí
-dt_classifier.fit(X_train, y_train)
+# Ajustar un Random Forest
+rf_classifier = RandomForestClassifier(random_state=42)  # Puedes variar los parámetros aquí
+rf_classifier.fit(X_train, y_train)
 
 # Predecir sobre el conjunto de test
-y_pred = dt_classifier.predict(X_test)
+y_pred = rf_classifier.predict(X_test)
 
-# Calcular el accuracy
+# Calcular la matriz de confusión
+conf_matrix = confusion_matrix(y_test, y_pred)
+print("Matriz de confusión:")
+print(conf_matrix)
+
+# Calcular F1-Score y comparar con el accuracy
+f1 = f1_score(y_test, y_pred)
 accuracy = accuracy_score(y_test, y_pred)
-print(f"Accuracy del modelo: {accuracy:.2f}")
-
-# Experimentar con diferentes valores de parámetros para el árbol de decisión
-# Por ejemplo, cambiar la profundidad máxima (max_depth), criterio, min_samples_split, etc.
+print(f"F1-Score: {f1:.2f}")
+print(f"Accuracy: {accuracy:.2f}")
